@@ -201,7 +201,7 @@ double y[2];
 y[0]=x2[0]-x1[0];
 y[1]=x2[1]-x1[1];
 return(  0.125*Phi(x,v)*((1-xi)*k1+(1+xi)*k2)*norm(y)  );}
-
+extern "C"
 __global__ void Bu(double M[%(Np)s][2],double Kur[%(Np)s][2],double N[%(Np)s][2],double q,double qp[2], double Pix[%(Np)s],double *F)
 {
 int i=blockIdx.x*blockDim.x+threadIdx.x;
@@ -271,7 +271,7 @@ double y[2];
 y[0]=0.5*((1-xi)*x1[0]+(1+xi)*x2[0]);
 y[1]=0.5*((1-xi)*x1[1]+(1+xi)*x2[1]);
 return( 0.25*Phi(x,y)*norm(v)*c );}
-
+extern "C"
 __global__ void Au(double M[%(Np)s][2],double N[%(Np)s][2],double A[%(Np2)s][%(Np2)s],double q, double qp[2],double Pix[%(Np)s])
 {
 int j=blockIdx.x*blockDim.x+threadIdx.x;
@@ -404,4 +404,3 @@ if(j<2*Np){
 """%{'Np':Np,'Np2':2*Np}
 
 	
-
