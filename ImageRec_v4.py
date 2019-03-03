@@ -108,9 +108,9 @@ MultiMxV=MxV.get_function("MultiMxV")
 Upt=SourceModule(amcf.UPT)
 UpTan=Upt.get_function("Up")
 
-BSys=SourceModule(amcf.Bu)
+BSys=SourceModule(amcf.Bu,no_extern_c=True)
 Bu=BSys.get_function("Bu")
-ASys=SourceModule(amcf.Au)
+ASys=SourceModule(amcf.Au,no_extern_c=True)
 Au=ASys.get_function("Au")
 
 
@@ -191,7 +191,7 @@ f.close()
 # Output
 P=M_gpu.get()
 pol=[(int(f_x(P[i][0])),int(f_y(P[i][1]))) for i in range(N) ]
-im2=Image.new(mode='L',size=(he,wi),color=255)
+im2=Image.new(mode='L',size=(wi,he),color=255)
 draw=ImageDraw.Draw(im2)
 draw.polygon(pol,fill=0)
 del draw
