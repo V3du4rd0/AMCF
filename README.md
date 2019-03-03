@@ -21,3 +21,6 @@ The mean curvature flow (MCF) deforms a hypersurface in the normal direction wit
 
 - Edit line 18 in "ImageRec_v4.py" to select the image.
 - Run "ImageRec_v4.py".
+
+##### Note:
+- For Python 3.X, 'print' syntax must be modified.
