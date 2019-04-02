@@ -15,6 +15,8 @@ def Area(pic):
 	return area/(255.*w*h)
 
 
+#CAMBIO
+
 fg='BEAN_999.bmp'  #'convex13.bmp'
 IMR=os.path.join('./images/',fg)
 im=Image.open(IMR)
