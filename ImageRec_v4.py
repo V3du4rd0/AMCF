@@ -31,7 +31,7 @@ for i in range(wi):
 		pixv=im.getpixel((i,j))
 		img[i][j]=pixv
 
-print "picture loaded..."
+print("picture loaded...")
 # ######################
 #
 #  START AMCF
@@ -128,7 +128,7 @@ Tlim=45000 #Max iterations
 if os.path.isdir('data')==0:
 	os.mkdir('data')
 route='data'
-print 'start...'
+print('start...')
 Ini=dat.datetime.now()
 for tk in range(Tlim):
 	bu_gpu=gpuarray.to_gpu(np.zeros(2*N).astype(np.float64))
@@ -141,7 +141,7 @@ for tk in range(Tlim):
 		x=[MM[i][0] for i in range(N)]
 		y=[MM[i][1] for i in range(N)]
 		for i in range(N):
-			print>>f,MM[i][0],MM[i][1]
+			f.write(str(MM[i][0])+","+str(MM[i][1])+"\n")
 		f.close()
 	Dist(M_gpu,d_gpu,block=(2,N,1))
 	C_lengpu=np.float64(gpuarray.sum(d_gpu).get())
@@ -174,7 +174,7 @@ for tk in range(Tlim):
 	if (len([Px[i] for i in range(N) if Px[i]<=190])==N) :
 		break
 Fin=dat.datetime.now()
-print 'time: ',dat.timedelta.total_seconds(Fin-Ini)
+print('time: ',dat.timedelta.total_seconds(Fin-Ini))
 
 MM=M_gpu.get()
 x=[MM[i][0] for i in range(N)]
@@ -185,7 +185,7 @@ y.append(y[0])
 name='time_'+str(tk).zfill(15)+'.txt'
 f=open(os.path.join(route,name),'w')
 for i in range(N):
-	print>>f,MM[i][0],MM[i][1]
+	f.write(str(MM[i][0])+","+str(MM[i][1])+"\n")
 f.close()
 # ######################
 # Output
@@ -199,9 +199,9 @@ fm='poly_detected.bmp'
 im2.save(fm)
 a1=Area(im)
 a2=Area(Image.open(fm))
-print 'Acc: ',(1-abs(a1-a2)/float(a1))*100,' %'
-print 'iterations: ', tk
-print 'matches: ', len([Px[i] for i in range(N) if Px[i]<=80]),'/'+str(N)
+print('Acc: ',(1-abs(a1-a2)/float(a1))*100,' %')
+print('iterations: ', tk)
+print('matches: ', len([Px[i] for i in range(N) if Px[i]<=80]),'/'+str(N))
 #
 # Plot
 import matplotlib.pyplot as plt
