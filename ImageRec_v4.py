@@ -5,7 +5,10 @@ from math import sqrt,pi,cos,sin
 import datetime as dat
 import os
 
-#Approx. area of black pixels
+#0 - black
+#255 - white
+
+#Function of the relative mole area
 def Area(pic):
 	w,h=pic.size
 	area=0.
@@ -15,19 +18,21 @@ def Area(pic):
 	return area/(255.*w*h)
 
 
-fg='BEAN_999.bmp'  #'convex13.bmp'
+fg='convex13_halfsize.bmp'  #'convex13.bmp'
 IMR=os.path.join('./images/',fg)
 im=Image.open(IMR)
 wi,he=im.size   
 img=np.zeros((wi,he))
 
+#Converting pixels [i,j] to world coordinates [x,y]
 fx=lambda x: (x-float(wi)*0.5)/100.
 fy=lambda y: (-y+float(he)*0.5)/100.
 
+#Converting world coordinates [x,y] to pixels [i,j]
 f_x=lambda x: x*100.+float(wi)*0.5
 f_y=lambda y: -1.*(y*100.-float(he)*0.5)
 for i in range(wi):
-	for j in range(wi):
+	for j in range(he):
 		pixv=im.getpixel((i,j))
 		img[i][j]=pixv
 
@@ -44,16 +49,20 @@ import pycuda.autoinit
 import pycuda.gpuarray as gpuarray
 from pycuda.compiler import SourceModule
 
+#Define qantity of points that wlil be approximated to the figure
+#Division of circunference in equal parts
 tt=np.linspace(0,2*np.pi,31)
 tt=list(tt)
 tt.pop()
 tt=np.array(tt)
 
 global N
-N=len(tt)
+N=len(tt) # Number of points created
 
+#Initial radius of circle
 RR=9.0
-radpix=5
+#Radius of pincel, not used anymore
+#radpix=5
 # Import all (string) kernels for AMCF 
 import mod_amcf_14 as amcf
 amcf.init_ker(N,wi,he)
@@ -61,6 +70,11 @@ amcf.init_ker(N,wi,he)
 #
 #            Create arrays
 #
+
+# NOTE: The following can be vectorized as follows: (cheking pending)
+#M[:,0] = list(map(math.cos,tt))
+#M[:,1] = list(map(math.sin,tt))
+#M = 7.9 *M
 #  Initial curve
 M=np.empty((N,2))
 for i in range(N):
@@ -213,7 +227,7 @@ dir='data'
 FILES=os.listdir(dir)
 FILES.sort()
 for file in FILES:
-	x,y=pyl.loadtxt(os.path.join(dir,file),unpack=True)
+	x,y=pyl.loadtxt(os.path.join(dir,file),unpack=True,delimiter = ",")
 	X=list(x)
 	X.append(X[0])
 	Y=list(y)
