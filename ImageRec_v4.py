@@ -17,6 +17,15 @@ def Area(pic):
 			area+=255.-pic.getpixel((i,j))
 	return area/(255.*w*h)
 
+#Converting pixels [i,j] to world coordinates [x,y]
+#This only takes back to the order of 2 decimals, with ceiling function.
+fx=lambda x: (x-float(wi)*0.5)/100.
+fy=lambda y: (-y+float(he)*0.5)/100.
+
+#Converting world coordinates [x,y] to pixels [i,j]
+f_x=lambda x: x*100.+float(wi)*0.5
+f_y=lambda y: -1.*(y*100.-float(he)*0.5)
+
 
 fg='convex13_halfsize.bmp'  #'convex13.bmp'
 IMR=os.path.join('./images/',fg)
@@ -24,13 +33,6 @@ im=Image.open(IMR)
 wi,he=im.size   
 img=np.zeros((wi,he))
 
-#Converting pixels [i,j] to world coordinates [x,y]
-fx=lambda x: (x-float(wi)*0.5)/100.
-fy=lambda y: (-y+float(he)*0.5)/100.
-
-#Converting world coordinates [x,y] to pixels [i,j]
-f_x=lambda x: x*100.+float(wi)*0.5
-f_y=lambda y: -1.*(y*100.-float(he)*0.5)
 for i in range(wi):
 	for j in range(he):
 		pixv=im.getpixel((i,j))
@@ -139,9 +141,15 @@ mu=np.float64(0.15)
 q_gpu=np.float64(1.0)
 qpos_gpu=gpuarray.to_gpu(np.zeros(2).astype(np.float64)) #charge position
 Tlim=45000 #Max iterations
+#Two directories are created, one to store MCF with world coordinates
+#The other to store MCF with pixel coordinates
 if os.path.isdir('data')==0:
 	os.mkdir('data')
 route='data'
+if os.path.isdir('data_pix')==0:
+	os.mkdir('data_pix')
+route2='data_pix'
+
 print('start...')
 Ini=dat.datetime.now()
 for tk in range(Tlim):
@@ -156,6 +164,12 @@ for tk in range(Tlim):
 		y=[MM[i][1] for i in range(N)]
 		for i in range(N):
 			f.write(str(MM[i][0])+","+str(MM[i][1])+"\n")
+		f.close()
+		f=open(os.path.join(route2,name),'w')
+		x_pix_coor=[int(f_x(MM[i][0])) for i in range(N)]
+		y_pix_coor=[int(f_y(MM[i][1])) for i in range(N)]
+		for i in range(N):
+			f.write(str(x_pix_coor[i])+","+str(y_pix_coor[i])+"\n")
 		f.close()
 	Dist(M_gpu,d_gpu,block=(2,N,1))
 	C_lengpu=np.float64(gpuarray.sum(d_gpu).get())
@@ -221,9 +235,10 @@ print('matches: ', len([Px[i] for i in range(N) if Px[i]<=80]),'/'+str(N))
 import matplotlib.pyplot as plt
 import pylab as pyl
 im = plt.imread(IMR)
-implot = plt.imshow(im,extent=[-9,9,-9,9] ,cmap='gray')
+#implot = plt.imshow(im,extent=[-9,9,-9,9] ,cmap='gray')
+implot = plt.imshow(im ,cmap='gray')
 plt.grid(True)
-dir='data'
+dir='data_pix'
 FILES=os.listdir(dir)
 FILES.sort()
 for file in FILES:
