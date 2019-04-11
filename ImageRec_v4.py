@@ -36,7 +36,10 @@ img=np.zeros((wi,he))
 for i in range(wi):
 	for j in range(he):
 		pixv=im.getpixel((i,j))
-		img[i][j]=pixv
+		if pixv<80:
+			img[i][j]=0
+		else:
+			img[i][j]=255
 
 print("picture loaded...")
 # ######################
@@ -136,6 +139,7 @@ PixVal=PixV.get_function('pixv')
 #Parameters
 h=np.float64(1./N)
 dt=np.float64(h**2)
+#mu es el promedio baricentrico de la curvatura de los cinco puntos
 mu=np.float64(0.15)
 
 q_gpu=np.float64(1.0)
