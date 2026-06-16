@@ -1,6 +1,6 @@
 # Contour Parametrization via Anisotropic Mean Curvature Flow (AMCF)
 
-This module is an implementation of the Mean Curvature Flow with constraints. The available code was used to generate the examples  [here](http://arxiv.org/abs/1803.03724).
+This module is an implementation of the Mean Curvature Flow with constraints. The available code was used to generate the examples  [here](http://arxiv.org/abs/1803.03724), and a peer-reviewed publication describing this work is also available [(link)](https://doi.org/10.1016/j.amc.2022.127699).
 
 The mean curvature flow (MCF) deforms a hypersurface in the normal direction with a speed proportional to its mean curvature. An example of a constrained MCF is the evolution of a closed planar curve enclosing an unique object. This code evolves a curve drawn around a single object picture, the evolution stops at the points which reach the object.
 
